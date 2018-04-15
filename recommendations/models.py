@@ -30,17 +30,17 @@ class SourceFile(models.Model):
     name = models.CharField(unique=True, max_length=50)
     source_code = models.TextField()
     changes_description = models.TextField()
+    interesting_lines = models.CharField(max_length=50, null=True, blank=True)
 
     def __str__(self):
         return self.name
 
 
 class Refactoring(models.Model):
-    batch = models.ForeignKey(Batch, on_delete=models.CASCADE)
+    batch = models.ForeignKey(Batch, on_delete=models.CASCADE, related_name='refactorings')
     type = models.ForeignKey(RefactoringType, on_delete=models.PROTECT)
     class_name = models.CharField(max_length=100)
-    changed = models.OneToOneField(SourceFile, on_delete=models.CASCADE, related_name='changed_by')
-    produced = models.OneToOneField(SourceFile, on_delete=models.CASCADE, related_name='produced_by')
+    file = models.OneToOneField(SourceFile, on_delete=models.CASCADE, default=None, null=True)
     order = models.IntegerField()
 
     class Meta:

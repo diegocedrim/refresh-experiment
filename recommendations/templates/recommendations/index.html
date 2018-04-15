@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+
+{% block content %}
+
+
+    <h1 class="mt-1">Recomendações a Avaliar</h1>
+
+    <p class="lead">Confira abaixo a lista de recomendações que você ainda precisa avaliar.
+        Clique em cada linha com status em aberto para finalizar cada uma das avaliações.
+        Sua opinião sobre cada recomendação é extremamente importante pra nós. Obrigado :)</p>
+
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Smell a Ser Removido</th>
+            <th scope="col">Descrição</th>
+            <th scope="col">Status</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for batch in batches %}
+            <tr>
+                <th scope="row">{{ forloop.counter }}</th>
+                <td>
+                    <a href="{% url 'details' batch.id %}">
+                        {{ batch.removed_smell }}
+                    </a>
+                </td>
+                <td>
+                    <a href="{% url 'details' batch.id %}">
+                        {{ batch.title }}
+                    </a>
+                </td>
+                <td>&nbsp;</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}
+

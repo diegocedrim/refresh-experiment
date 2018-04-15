@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block header %}
+    <link href="{% static 'css/prism.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+
+
+    <h3 class="mt-1">{{ batch.title }}</h3>
+    <hr/>
+    <p style="white-space: pre-wrap;">{{ batch.description }}</p>
+
+
+    {#    {% for refactoring in refactorings %}#}
+    {#        <pre class="line-numbers" data-line="1-5"><code#}
+    {#                class="language-java">{{ refactoring.changed.source_code }}</code></pre>#}
+    {#        <pre><code class="language-java">{{ refactoring.produced.source_code }}</code></pre>#}
+    {#    {% endfor %}#}
+
+
+    <ul class="nav nav-tabs" id="refactoringsTab" role="tablist">
+        {% for refactoring in refactorings %}
+            <li class="nav-item">
+                <a class="nav-link {% if forloop.counter == 1 %}active{% endif %}"
+                   id="tab-selector-{{ forloop.counter }}"
+                   data-toggle="tab"
+                   href="#tab-{{ forloop.counter }}"
+                   role="tab"
+                   aria-controls="tab-{{ forloop.counter }}"
+                   aria-selected="{% if forloop.counter == 1 %}active{% else %}false{% endif %}">
+                    {{ refactoring.type.name }}{% if refactoring.order >= 1 %}#{{ refactoring.order }}{% endif %}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+    <div class="tab-content" id="refactoringsTabContent">
+        {% for refactoring in refactorings %}
+            <div class="tab-pane fade show {% if forloop.counter == 1 %}active{% endif %}"
+                 id="tab-{{ forloop.counter }}"
+                 role="tabpanel"
+                 aria-labelledby="tab-selector-{{ forloop.counter }}">
+
+
+                <div class="alert alert-dark" role="alert" style="margin-top: 20px;">
+                  {{ refactoring.file.changes_description }}
+                </div>
+
+                <pre class="line-numbers" data-line="{{ refactoring.file.interesting_lines }}"><code class="language-java">{{ refactoring.file.source_code }}</code></pre>
+            </div>
+        {% endfor %}
+    </div>
+
+{% endblock %}
+
+
+{% block scripts %}
+    <script src="{% static 'js/prism.js' %}"></script>
+    <script>
+
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+          Prism.highlightAll();
+        });
+    </script>
+{% endblock %}
