@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.contrib.auth.models import User
 # Create your models here.
 
 
@@ -14,6 +14,12 @@ class Batch(models.Model):
     title = models.CharField(max_length=100, unique=True)
     removed_smell = models.ForeignKey(CodeSmell, on_delete=models.PROTECT)
     description = models.TextField()
+
+    def feedback(self, user):
+        result = BatchFeedback.objects.filter(batch=self, user=user)
+        if result:
+            return result[0]
+        return None
 
     def __str__(self):
         return self.title
@@ -48,3 +54,24 @@ class Refactoring(models.Model):
 
     def __str__(self):
         return "%s na classe %s [%s]" % (self.type, self.class_name, self.order)
+
+
+class BatchFeedback(models.Model):
+    batch = models.ForeignKey(Batch, on_delete=models.CASCADE, related_name='feedbacks')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    observations = models.TextField()
+    is_positive = models.BooleanField()
+
+    class Meta:
+        unique_together = ('batch', 'user')
+
+    def __str__(self):
+        return "%s sobre '%s'" % (self.user.get_short_name(), self.batch)
+
+
+class UserSubject(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    on_experiment = models.BooleanField(default=True)
+
+    def __str__(self):
+        return "%s" % self.user

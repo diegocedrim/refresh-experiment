@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="page-header">
+    <h1>Encerrando o Experimento</h1>
+</div>
+
+<p>Olá {{ user.username }}, você realmente quer encerrar o experimento?</p>
+
+<p>Depois do encerramento, nenhum outro dado poderá ser inserido.</p>
+
+<p class="text-right">
+    <a href="{% url 'index' %}" class="btn btn-success btn-lg" role="button">Voltar</a>
+    <a href="{% url 'finish' %}" class="btn btn-danger btn-lg" role="button">Encerrar</a>
+</p>
+
+
+{% endblock %}
+

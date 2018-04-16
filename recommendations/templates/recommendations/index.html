@@ -17,30 +17,41 @@
         <thead>
         <tr>
             <th scope="col">#</th>
-            <th scope="col">Smell a Ser Removido</th>
+            <th scope="col">Smell Removido</th>
             <th scope="col">Descrição</th>
-            <th scope="col">Status</th>
+            <th scope="col"></th>
         </tr>
         </thead>
         <tbody>
-        {% for batch in batches %}
+        {% for data_row in data %}
             <tr>
                 <th scope="row">{{ forloop.counter }}</th>
                 <td>
-                    <a href="{% url 'details' batch.id %}">
-                        {{ batch.removed_smell }}
+                    <a href="{% url 'details' data_row.batch.id %}">
+                        {{ data_row.batch.removed_smell }}
                     </a>
                 </td>
                 <td>
-                    <a href="{% url 'details' batch.id %}">
-                        {{ batch.title }}
+                    <a href="{% url 'details' data_row.batch.id %}">
+                        {{ data_row.batch.title }}
                     </a>
                 </td>
-                <td>&nbsp;</td>
+                <td>&nbsp;
+                    {% if data_row.feedback %}
+                        <span class="badge badge-pill badge-success">Respondido</span>
+                    {% else %}
+                        <span class="badge badge-pill badge-secondary">A responder</span>
+                    {% endif %}
+                </td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 
+    {% if can_finish %}
+        <p class="text-right">
+            <a href="{% url 'confirmation' %}" class="btn btn-danger btn-lg" role="button">Encerrar</a>
+        </p>
+    {% endif %}
 {% endblock %}
 

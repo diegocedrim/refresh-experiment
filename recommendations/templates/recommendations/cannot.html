@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<div class="page-header">
+    <h1>Não pode encerrar :(</h1>
+</div>
+
+<p>Olá {{ user.username }}, você ainda não pode encerrar o experimento.</p>
+
+<p>Por favor, preencha todos os formulários.</p>
+
+{% endblock %}
+
