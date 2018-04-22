@@ -32,21 +32,10 @@ class RefactoringType(models.Model):
         return self.name
 
 
-class SourceFile(models.Model):
-    name = models.CharField(unique=True, max_length=50)
-    source_code = models.TextField()
-    changes_description = models.TextField()
-    interesting_lines = models.CharField(max_length=50, null=True, blank=True)
-
-    def __str__(self):
-        return self.name
-
-
 class Refactoring(models.Model):
     batch = models.ForeignKey(Batch, on_delete=models.CASCADE, related_name='refactorings')
     type = models.ForeignKey(RefactoringType, on_delete=models.PROTECT)
     class_name = models.CharField(max_length=100)
-    file = models.OneToOneField(SourceFile, on_delete=models.CASCADE, default=None, null=True)
     order = models.IntegerField()
 
     class Meta:
@@ -56,11 +45,31 @@ class Refactoring(models.Model):
         return "%s na classe %s [%s]" % (self.type, self.class_name, self.order)
 
 
+class SourceFile(models.Model):
+    name = models.CharField(unique=True, max_length=50)
+    source_code = models.TextField()
+    interesting_lines = models.CharField(max_length=50, null=True, blank=True)
+    refactoring = models.ForeignKey(Refactoring, on_delete=models.CASCADE, related_name='files', null=True)
+    changes_description = models.TextField()
+
+    def __str__(self):
+        return self.name
+
+
 class BatchFeedback(models.Model):
     batch = models.ForeignKey(Batch, on_delete=models.CASCADE, related_name='feedbacks')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     observations = models.TextField()
-    is_positive = models.BooleanField()
+
+    CHOICES = (
+        ('s', 'Sim'),
+        ('n', 'Não'),
+        ('p', 'Parcialmente'),
+    )
+    perception = models.CharField(max_length=1, choices=CHOICES)
+
+    def perception_choices(self):
+        return BatchFeedback.CHOICES
 
     class Meta:
         unique_together = ('batch', 'user')

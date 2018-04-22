@@ -18,6 +18,7 @@
     <orderEntry type="jdk" jdkName="Python 3.5 (refresh_experiment)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="R Skeletons" level="application" />
+    <orderEntry type="library" name="R User Library" level="project" />
   </component>
   <component name="TemplatesService">
     <option name="TEMPLATE_CONFIGURATION" value="Django" />

@@ -16,16 +16,30 @@ class UserSubjectInline(admin.StackedInline):
     verbose_name_plural = 'subjects'
 
 
+class SourceFileInline(admin.StackedInline):
+    model = SourceFile
+    can_delete = True
+    verbose_name_plural = 'source files'
+
+
+class RefactoringAdmin(admin.ModelAdmin):
+    inlines = (SourceFileInline, )
+
+
 # Define a new User admin
 class UserAdmin(BaseUserAdmin):
     inlines = (UserSubjectInline, )
 
 
+class SourceFileAdmin(admin.ModelAdmin):
+    list_display = ('name', 'refactoring')
+
+
 admin.site.register(Batch, BatchAdmin)
-admin.site.register(Refactoring)
+admin.site.register(Refactoring, RefactoringAdmin)
 admin.site.register(RefactoringType)
 admin.site.register(CodeSmell)
-admin.site.register(SourceFile)
+admin.site.register(SourceFile, SourceFileAdmin)
 admin.site.register(BatchFeedback)
 
 

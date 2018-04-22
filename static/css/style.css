@@ -98,3 +98,6 @@ pre[class*="language-"] {
 .bd-callout-warning {
     border-left-color: #f0ad4e;
 }
+.refactoring-description {
+    background-color: #dddddd;
+}

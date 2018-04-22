@@ -74,13 +74,19 @@ def save_batch_feedback(request, batch_id):
 
     improved = request.POST.get('improved', None)
     observations = request.POST.get('observations', None)
-    if improved is None:
-        messages.add_message(request, messages.ERROR, 'Marque sim ou não no formulário')
-        context = {'batch': batch}
+    feedback.perception = improved
+    feedback.observations = observations
+
+    if improved is None or observations is None or len(observations.strip()) < 10:
+        messages.add_message(request, messages.ERROR, 'Favor, preencher todos os campos do formulário.')
+        context = {
+            'batch': batch,
+            'refactorings': Refactoring.objects.filter(batch=batch).order_by('order'),
+            'user': request.user,
+            'feedback': feedback
+        }
         return render(request, 'recommendations/batch.html', context)
 
-    feedback.is_positive = improved
-    feedback.observations = observations
     feedback.save()
     messages.add_message(request, messages.SUCCESS, 'Resposta salva com sucesso')
 

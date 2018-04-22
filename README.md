@@ -1,0 +1,1 @@
+pg_dump --no-owner --no-privileges --user diego refresh_experiment > refresh.sql
