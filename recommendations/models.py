@@ -38,6 +38,9 @@ class Refactoring(models.Model):
     class_name = models.CharField(max_length=100)
     order = models.IntegerField()
 
+    def ordered_files(self):
+        return self.files.order_by('id')
+
     class Meta:
         unique_together = ('batch', 'order')
 

@@ -97,7 +97,7 @@
                  role="tabpanel"
                  aria-labelledby="tab-selector-{{ forloop.counter }}">
 
-                {% for file in refactoring.files.all %}
+                {% for file in refactoring.ordered_files %}
                     <div class="bd-callout bd-callout-warning refactoring-description" style="margin: 20px;">
                         <h5>Descrição das Alterações no Arquivo</h5>
                         <p style="white-space: pre-wrap;">{{ file.changes_description }}</p>
