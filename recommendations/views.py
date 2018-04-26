@@ -32,7 +32,7 @@ class Index(LoginRequiredMixin, UserOnExperimentView):
         context = super().get_context_data()
         context['user'] = self.request.user
         data = []
-        batches = Batch.objects.all()
+        batches = Batch.objects.all().order_by('removed_smell')
         for batch in batches:
             data.append({'batch': batch, 'feedback': batch.feedback(self.request.user)})
         context['data'] = data
