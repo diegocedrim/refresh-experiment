@@ -117,3 +117,10 @@ def confirmation(request):
 @login_required
 def the_end(request):
     return render(request, 'recommendations/the_end.html')
+
+
+@login_required
+def welcome(request):
+    if BatchFeedback.objects.filter(user=request.user).exists():
+        return HttpResponseRedirect(reverse('index'))
+    return render(request, 'recommendations/welcome.html', context={'user':request.user})

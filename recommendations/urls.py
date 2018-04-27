@@ -10,4 +10,5 @@ urlpatterns = [
     url(r'^finish/$', views.finish, name='finish'),
     url(r'^confirmation/$', views.confirmation, name='confirmation'),
     url(r'^cannot/$', views.cannot, name='cannot'),
+    url(r'^welcome/$', views.welcome, name='welcome'),
 ]
