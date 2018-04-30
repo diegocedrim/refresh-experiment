@@ -35,12 +35,16 @@ class SourceFileAdmin(admin.ModelAdmin):
     list_display = ('name', 'refactoring')
 
 
+class BatchFeedbackAdmin(admin.ModelAdmin):
+    list_display = ('user', 'batch', 'perception', 'observations')
+
+
 admin.site.register(Batch, BatchAdmin)
 admin.site.register(Refactoring, RefactoringAdmin)
 admin.site.register(RefactoringType)
 admin.site.register(CodeSmell)
 admin.site.register(SourceFile, SourceFileAdmin)
-admin.site.register(BatchFeedback)
+admin.site.register(BatchFeedback, BatchFeedbackAdmin)
 
 
 admin.site.unregister(User)
