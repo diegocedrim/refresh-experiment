@@ -35,7 +35,7 @@ class UserAdmin(BaseUserAdmin):
         return user.subject.on_experiment
 
     def completion(self, user):
-        total = BatchFeedback.objects.count()
+        total = Batch.objects.count()
         complete = user.feedbacks.count()
         return "%.2f%%" % (float(complete)/total * 100)
 
