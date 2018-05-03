@@ -30,7 +30,7 @@
         <form method="post" action="{% url 'save_batch_feedback' batch.id %}">
             {% csrf_token %}
             <div class="form-group">
-                <label>Você acha que a sequência de refatorações melhorou a estrtura do código?</label>
+                <label>Você acha que a sequência de refatorações melhorou a estrutura do código?</label>
                 <div class="form-check">
                     <input required class="form-check-input"
                            type="radio" name="improved" id="improvedCheck1" value="s"

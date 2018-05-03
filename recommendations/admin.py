@@ -28,7 +28,16 @@ class RefactoringAdmin(admin.ModelAdmin):
 
 # Define a new User admin
 class UserAdmin(BaseUserAdmin):
+    list_display = ('first_name', 'last_name', 'completion')
     inlines = (UserSubjectInline, )
+
+    def on_experiment(self, user):
+        return user.subject.on_experiment
+
+    def completion(self, user):
+        total = BatchFeedback.objects.count()
+        complete = user.feedbacks.count()
+        return "%.2f%%" % (float(complete)/total * 100)
 
 
 class SourceFileAdmin(admin.ModelAdmin):

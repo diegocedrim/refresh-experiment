@@ -61,7 +61,7 @@ class SourceFile(models.Model):
 
 class BatchFeedback(models.Model):
     batch = models.ForeignKey(Batch, on_delete=models.CASCADE, related_name='feedbacks')
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='feedbacks')
     observations = models.TextField()
 
     CHOICES = (
@@ -82,7 +82,7 @@ class BatchFeedback(models.Model):
 
 
 class UserSubject(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='subject')
     on_experiment = models.BooleanField(default=True)
 
     def __str__(self):
