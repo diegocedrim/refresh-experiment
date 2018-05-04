@@ -24,6 +24,8 @@ class SourceFileInline(admin.StackedInline):
 
 class RefactoringAdmin(admin.ModelAdmin):
     inlines = (SourceFileInline, )
+    list_display = ('type', 'class_name', 'order', 'batch')
+    ordering = ('batch', 'order')
 
 
 # Define a new User admin
@@ -44,8 +46,64 @@ class SourceFileAdmin(admin.ModelAdmin):
     list_display = ('name', 'refactoring')
 
 
+class UserNameListFilter(admin.SimpleListFilter):
+    # Human-readable title which will be displayed in the
+    # right admin sidebar just above the filter options.
+    title = 'User Same'
+
+    # Parameter for the filter that will be used in the URL query.
+    parameter_name = 'user_id'
+
+    def lookups(self, request, model_admin):
+        """
+        Returns a list of tuples. The first element in each
+        tuple is the coded value for the option that will
+        appear in the URL query. The second element is the
+        human-readable name for the option that will appear
+        in the right sidebar.
+        """
+        values = BatchFeedback.objects.order_by(
+            'user__first_name',
+            'user__last_name',
+        ).distinct(
+            'user__first_name',
+            'user__last_name',
+        )
+
+        lks = []
+        for feedback in values:
+            user = feedback.user
+            lks.append((user.id, '%s %s' % (user.first_name, user.last_name)))
+
+        return tuple(lks)
+
+    def queryset(self, request, queryset):
+        """
+        Returns the filtered queryset based on the value
+        provided in the query string and retrievable via
+        `self.value()`.
+        """
+        # Compare the requested value (either '80s' or '90s')
+        # to decide how to filter the queryset.
+        # if self.value() == '80s':
+        #     return queryset.filter(birthday__gte=date(1980, 1, 1),
+        #                             birthday__lte=date(1989, 12, 31))
+        # if self.value() == '90s':
+        #     return queryset.filter(birthday__gte=date(1990, 1, 1),
+        #                             birthday__lte=date(1999, 12, 31))
+        if self.value():
+            return BatchFeedback.objects.filter(user__id=int(self.value()))
+        else:
+            return BatchFeedback.objects.all()
+
+
 class BatchFeedbackAdmin(admin.ModelAdmin):
-    list_display = ('user', 'batch', 'perception', 'observations')
+    list_display = ('user_name', 'batch', 'perception', 'observations')
+    list_filter = (UserNameListFilter,)
+
+    def user_name(self, feedback):
+        user = feedback.user
+        return '%s %s' % (user.first_name, user.last_name)
 
 
 admin.site.register(Batch, BatchAdmin)

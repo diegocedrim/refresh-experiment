@@ -10,21 +10,58 @@
 
     <h3 class="mt-1">{{ batch.title }}</h3>
     <hr/>
-    <p class="lead" style="white-space: pre-wrap;">{{ batch.description }}</p>
-    <hr>
+    <p class="lead" style="white-space: pre-wrap;">{% autoescape off %}{{ batch.description }}{% endautoescape %}</p>
+
+
+    <ul class="nav nav-tabs" id="refactoringsTab" role="tablist">
+        {% for refactoring in refactorings %}
+            <li class="nav-item">
+                <a class="nav-link {% if forloop.counter == 1 %}active{% endif %}"
+                   id="tab-selector-{{ forloop.counter }}"
+                   data-toggle="tab"
+                   href="#tab-{{ forloop.counter }}"
+                   role="tab"
+                   aria-controls="tab-{{ forloop.counter }}"
+                   aria-selected="{% if forloop.counter == 1 %}active{% else %}false{% endif %}">
+                    {% if refactoring.order >= 1 %}{{ refactoring.order }}. {% endif %}{{ refactoring.type.name }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+    <div class="tab-content" id="refactoringsTabContent">
+        {% for refactoring in refactorings %}
+            <div style="border: 1px solid #eee;"
+                 class="tab-pane fade show {% if forloop.counter == 1 %}active{% endif %}"
+                 id="tab-{{ forloop.counter }}"
+                 role="tabpanel"
+                 aria-labelledby="tab-selector-{{ forloop.counter }}">
+
+                {% for file in refactoring.ordered_files %}
+                    <div class="bd-callout bd-callout-warning refactoring-description" style="margin: 20px;">
+                        <h5>Descrição das Alterações no Arquivo</h5>
+                        <p style="white-space: pre-wrap;">{% autoescape off %}{{ file.changes_description }}{% endautoescape %}</p>
+                    </div>
+                    <pre class="line-numbers" data-line="{{ file.interesting_lines }}"><code
+                        class="language-java">{{ file.source_code }}</code></pre>
+                {% endfor %}
+
+            </div>
+        {% endfor %}
+    </div>
+
 
     <div class="bd-callout bd-callout-warning">
         <h5>Instruções de Preenchimento</h5>
         <p>
-            Após analisar cada uma das refatorações pertencentes ao lote aqui apresentado,
-            preencha o formulário de avaliação. Você deve indicar se você acha que a sequência
+            Após analisar cada uma das refatorações pertencentes à sequência aqui apresentada,
+            preencha o formulário de avaliação. Você deve indicar se acha que a sequência
             de refatorações proposta é adequada ou não para a melhoria da estrutura do código. Se
             você acredita que a sequência apresentada poderia ser melhorada ou se você faria algo
             melhor para atingir o mesmo objetivo, por favor indique isso no campo de justificativa.
         </p>
     </div>
 
-    <div>
+    <div style="padding-bottom: 20px;">
         <h4>Formulário de Avaliação</h4>
 
         <form method="post" action="{% url 'save_batch_feedback' batch.id %}">
@@ -60,54 +97,16 @@
                 <label for="observations">Justificativa</label>
                 <textarea minlength="10" class="form-control" id="observations" rows="3" name="observations" required>{{ feedback.observations }}</textarea>
             </div>
-            <button type="submit" class="btn btn-primary">Salvar</button>
+            <div class="row">
+                <div class="col-sm text-left">
+                  <button type="submit" class="btn btn-success">Salvar</button>
+                </div>
+                <div class="col-sm text-right">
+                  <button type="button" onclick="toTop()" class="btn btn-primary">Voltar para o Topo</button>
+                </div>
+              </div>
+
         </form>
-    </div>
-
-    <hr>
-
-
-    {#    {% for refactoring in refactorings %}#}
-    {#        <pre class="line-numbers" data-line="1-5"><code#}
-    {#                class="language-java">{{ refactoring.changed.source_code }}</code></pre>#}
-    {#        <pre><code class="language-java">{{ refactoring.produced.source_code }}</code></pre>#}
-    {#    {% endfor %}#}
-
-
-    <ul class="nav nav-tabs" id="refactoringsTab" role="tablist">
-        {% for refactoring in refactorings %}
-            <li class="nav-item">
-                <a class="nav-link {% if forloop.counter == 1 %}active{% endif %}"
-                   id="tab-selector-{{ forloop.counter }}"
-                   data-toggle="tab"
-                   href="#tab-{{ forloop.counter }}"
-                   role="tab"
-                   aria-controls="tab-{{ forloop.counter }}"
-                   aria-selected="{% if forloop.counter == 1 %}active{% else %}false{% endif %}">
-                    {% if refactoring.order >= 1 %}{{ refactoring.order }}. {% endif %}{{ refactoring.type.name }}
-                </a>
-            </li>
-        {% endfor %}
-    </ul>
-    <div class="tab-content" id="refactoringsTabContent">
-        {% for refactoring in refactorings %}
-            <div style="border: 1px solid #eee;"
-                 class="tab-pane fade show {% if forloop.counter == 1 %}active{% endif %}"
-                 id="tab-{{ forloop.counter }}"
-                 role="tabpanel"
-                 aria-labelledby="tab-selector-{{ forloop.counter }}">
-
-                {% for file in refactoring.ordered_files %}
-                    <div class="bd-callout bd-callout-warning refactoring-description" style="margin: 20px;">
-                        <h5>Descrição das Alterações no Arquivo</h5>
-                        <p style="white-space: pre-wrap;">{{ file.changes_description }}</p>
-                    </div>
-                    <pre class="line-numbers" data-line="{{ file.interesting_lines }}"><code
-                        class="language-java">{{ file.source_code }}</code></pre>
-                {% endfor %}
-
-            </div>
-        {% endfor %}
     </div>
 
 {% endblock %}
@@ -116,6 +115,10 @@
 {% block scripts %}
     <script src="{% static 'js/prism.js' %}"></script>
     <script>
+
+        function toTop() {
+            document.body.scrollTop = document.documentElement.scrollTop = 0;
+        }
 
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
             Prism.highlightAll();

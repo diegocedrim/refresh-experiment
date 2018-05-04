@@ -9,8 +9,25 @@
     <h1 class="mt-1">Recomendações a Avaliar</h1>
 
     <p class="lead">Confira abaixo a lista de recomendações que você ainda precisa avaliar.
-        Clique em cada linha com status em aberto para finalizar cada uma das avaliações.
-        Sua opinião sobre cada recomendação é extremamente importante pra nós. Obrigado :)</p>
+        Clique em cada linha com status <span class="badge badge-secondary">A responder</span> para finalizar cada uma das avaliações.
+        Sua opinião sobre cada recomendação é extremamente importante para nós.</p>
+
+
+    {% if can_finish %}
+        <div class="bd-callout bd-callout-warning refactoring-description">
+            <h5>Encerrando o Experimento</h5>
+            <p style="padding-bottom: 10px;">
+                {{ user.first_name }}, percebemos que você já preencheu todos os formulários disponíveis.
+            Assim, você já pode encerrar o experimento clicando no botão abaixo.
+            </p>
+            <p class="text-center">
+                <a href="{% url 'confirmation' %}" class="btn btn-success btn-lg" role="button">
+                    Encerrar Experimento
+                </a>
+            </p>
+        </div>
+    {% endif %}
+
 
 
     <table class="table table-striped">
@@ -19,7 +36,7 @@
             <th scope="col">#</th>
             <th scope="col">Smell Removido</th>
             <th scope="col">Descrição</th>
-            <th scope="col"></th>
+            <th scope="col">Status</th>
         </tr>
         </thead>
         <tbody>
@@ -38,20 +55,14 @@
                 </td>
                 <td>&nbsp;
                     {% if data_row.feedback %}
-                        <span class="badge badge-pill badge-success">Respondido</span>
+                        <span class="badge badge-success">Respondido</span>
                     {% else %}
-                        <span class="badge badge-pill badge-secondary">A responder</span>
+                        <span class="badge badge-secondary">A responder</span>
                     {% endif %}
                 </td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
-
-    {% if can_finish %}
-        <p class="text-right">
-            <a href="{% url 'confirmation' %}" class="btn btn-danger btn-lg" role="button">Encerrar</a>
-        </p>
-    {% endif %}
 {% endblock %}
 

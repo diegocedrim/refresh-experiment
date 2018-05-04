@@ -99,5 +99,9 @@ pre[class*="language-"] {
     border-left-color: #f0ad4e;
 }
 .refactoring-description {
-    background-color: #dddddd;
+    background-color: #eeeeee;
+}
+
+code {
+    color: #1b1e21;
 }

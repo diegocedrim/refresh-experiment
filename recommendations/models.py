@@ -84,6 +84,7 @@ class BatchFeedback(models.Model):
 class UserSubject(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='subject')
     on_experiment = models.BooleanField(default=True)
+    was_welcomed = models.BooleanField(default=False)
 
     def __str__(self):
         return "%s" % self.user

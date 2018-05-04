@@ -88,7 +88,7 @@ def save_batch_feedback(request, batch_id):
         return render(request, 'recommendations/batch.html', context)
 
     feedback.save()
-    messages.add_message(request, messages.SUCCESS, 'Resposta salva com sucesso')
+    messages.add_message(request, messages.SUCCESS, 'Dados salvos com sucesso')
 
     return HttpResponseRedirect(reverse('index'))
 
@@ -121,6 +121,9 @@ def the_end(request):
 
 @login_required
 def welcome(request):
-    if BatchFeedback.objects.filter(user=request.user).exists():
+    subject = UserSubject.objects.get(user=request.user)
+    if subject.was_welcomed:
         return HttpResponseRedirect(reverse('index'))
-    return render(request, 'recommendations/welcome.html', context={'user':request.user})
+    subject.was_welcomed = True
+    subject.save()
+    return render(request, 'recommendations/welcome.html', context={'user': request.user})
