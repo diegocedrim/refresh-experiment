@@ -23,6 +23,7 @@ urlpatterns = [
     url(r'^$', RedirectView.as_view(url='/recommendations/welcome', permanent=False), name='home'),
     url(r'^login/$', auth_views.login, {'template_name': 'login.html'}, name='login'),
     url(r'^logout/$', auth_views.logout, {'next_page': '/'}, name='logout'),
+    path('batch_tree/', include('batch_tree.urls')),
     path('recommendations/', include('recommendations.urls')),
     path('admin/', admin.site.urls),
 ]

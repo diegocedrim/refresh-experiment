@@ -1,0 +1,40 @@
+{% load humanize %}
+{% for node in children %}
+    <tr data-node="treetable-{{ node.id }}"
+            {% if node.has_children %} class="treetable-collapsed" {% endif %}
+            data-pnode="treetable-parent-{{ node.parent.id }}">
+        <td style="vertical-align: middle">
+            {% for identer in identers %}
+                <span class="treetable-indent"></span>
+            {% endfor %}
+
+            {% if node.has_children %}
+                <span
+                    onclick="render_children(this,{{ node.id }}, {{ next_level }});"
+                    class="treetable-expander fa fa-angle-right">
+                </span>
+            {% else %}
+                <span class="treetable-expander"></span>
+            {% endif %}
+            {{ node.element_name }}
+        </td>
+        <td class="classification-row">
+            {{ node.element_based_group.count | intcomma}} <br>
+            <span class="positive">{{ node.element_based_group.positive | intcomma }}</span>
+                <span class="neutral">{{ node.element_based_group.neutral | intcomma }}</span>
+                <span class="negative">{{ node.element_based_group.negative | intcomma }}</span>
+        </td>
+        <td class="classification-row">
+            {{ node.scope_based_group.count | intcomma}} <br>
+            <span class="positive">{{ node.scope_based_group.positive | intcomma }}</span>
+                <span class="neutral">{{ node.scope_based_group.neutral | intcomma }}</span>
+                <span class="negative">{{ node.scope_based_group.negative | intcomma }}</span>
+        </td>
+        <td class="classification-row">
+            {{ node.version_based_group.count | intcomma }} <br>
+            <span class="positive">{{ node.version_based_group.positive | intcomma }}</span>
+                <span class="neutral">{{ node.version_based_group.neutral | intcomma }}</span>
+                <span class="negative">{{ node.version_based_group.negative | intcomma }}</span>
+        </td>
+    </tr>
+{% endfor %}

@@ -1,0 +1,110 @@
+{% extends 'batches.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block header %}
+    <link href="{% static 'css/bootstrap-treefy.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+    <h3>
+      Batch Distribution
+      <small class="text-muted">by synthesis heuristic</small>
+    </h3>
+    <hr>
+
+    <table class="table table-hover" id="table_batches">
+        <thead>
+        <tr>
+            <th width="50%">Element</th>
+            <th style="text-align: center">Element-Based</th>
+            <th style="text-align: center">Scope-Based</th>
+            <th style="text-align: center">Version-Based</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for node in roots %}
+            <tr data-node="treetable-{{ node.id }}"  {% if node.has_children %} class="treetable-collapsed" {% endif %}>
+                <td style="vertical-align: middle">
+                    {% if node.has_children %}
+                        <span
+                            onclick="render_children(this,{{ node.id }}, 1);"
+                            class="treetable-expander fa fa-angle-right">
+                        </span>
+                    {% endif %}
+                    {{ node.element_name }}
+                </td>
+                <td class="classification-row">
+                    {{ node.element_based_group.count | intcomma}} <br>
+                    <span class="positive">{{ node.element_based_group.positive | intcomma }}</span>
+                        <span class="neutral">{{ node.element_based_group.neutral | intcomma }}</span>
+                        <span class="negative">{{ node.element_based_group.negative | intcomma }}</span>
+                </td>
+                <td class="classification-row">
+                    {{ node.scope_based_group.count | intcomma}} <br>
+                    <span class="positive">{{ node.scope_based_group.positive | intcomma }}</span>
+                        <span class="neutral">{{ node.scope_based_group.neutral | intcomma }}</span>
+                        <span class="negative">{{ node.scope_based_group.negative | intcomma }}</span>
+                </td>
+                <td class="classification-row">
+                    {{ node.version_based_group.count | intcomma }} <br>
+                    <span class="positive">{{ node.version_based_group.positive | intcomma }}</span>
+                        <span class="neutral">{{ node.version_based_group.neutral | intcomma }}</span>
+                        <span class="negative">{{ node.version_based_group.negative | intcomma }}</span>
+                </td>
+            </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'js/bootstrap-treefy.js' %}"></script>
+    <script>
+        function removeSubtree(parent_id) {
+            var qualifier = "tr[data-pnode=treetable-parent-" + parent_id + "]";
+            var children = $("#table_batches").find(qualifier);
+            children.each(function(index) {
+                var el = $(this);
+                var node_id = el.attr("data-node").split("-")[1];
+                removeSubtree(node_id);
+            });
+            children.remove();
+        }
+        function render_children(span, node_id, level) {
+            var row = $($(span).closest("tr"));
+            var expander = $(row.find('.treetable-expander')[0]);
+            if (expander) {
+                if (row.hasClass('treetable-collapsed')) {
+
+                    expander.removeClass('fa fa-angle-right');
+                    expander.addClass('fa fa-spinner fa-spin');
+                    row.addClass('treetable-expanded');
+                    row.removeClass('treetable-collapsed');
+                    jQuery.get("children/" + node_id + "/?level="+level, function(data) {
+                        var row = $($(span).closest("tr"));
+                        row.after(data);
+                        expander.removeClass('fa fa-spinner fa-spin');
+                        expander.addClass('fa fa-angle-down');
+                    });
+                } else {
+                    expander.removeClass('fa fa-angle-down');
+                    expander.addClass('fa fa-angle-right');
+                    row.addClass('treetable-collapsed');
+                    row.removeClass('treetable-expanded');
+                    removeSubtree(node_id);
+                    {#$("#table_batches").find("tr[data-pnode=treetable-parent-" + node_id + "]").remove();#}
+                }
+            }
+        }
+       $(function() {
+            $("#table").treeFy({
+                treeColumn: 0,
+                initStatusClass: 'treetable-collapsed'
+            });
+        });
+    </script>
+{% endblock %}

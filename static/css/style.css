@@ -16,6 +16,25 @@ canvas {
     color: #6b9235;
 }
 
+.negative {
+    color: #d93436;
+    font-weight: bold;
+}
+
+.positive {
+    color: #6b9235;
+    font-weight: bold;
+}
+
+.neutral {
+    font-weight: bold;
+}
+
+.classification-row {
+    text-align: center;
+    vertical-align: center;
+}
+
 .feather {
     width: 16px;
     height: 16px;
