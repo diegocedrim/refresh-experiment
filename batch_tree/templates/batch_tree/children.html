@@ -16,7 +16,9 @@
             {% else %}
                 <span class="treetable-expander"></span>
             {% endif %}
-            {{ node.element_name }}
+            <a target="node_details" href="{% url 'node_details' node_id=node.id %}">
+             {{ node.element_name }}
+            </a>
         </td>
         <td class="classification-row">
             {{ node.element_based_group.count | intcomma}} <br>

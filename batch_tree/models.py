@@ -18,9 +18,12 @@ class SynthesisHeuristic(models.Model):
 class Batch(models.Model):
     size = models.IntegerField()
     is_cross_type = models.BooleanField()
+    is_cross_commit = models.NullBooleanField()
     open_source = models.BooleanField()
+    classification_level = models.CharField(max_length=50, null=True)
     classification = models.ForeignKey(BatchClassification, on_delete=models.PROTECT)
     heuristic = models.ForeignKey(SynthesisHeuristic, on_delete=models.PROTECT)
+    sequence = models.CharField(max_length=2500, null=True)
 
 
 class Project(models.Model):
@@ -46,6 +49,14 @@ class Node(models.Model):
             node=self,
             heuristic=SynthesisHeuristic.objects.get(name=name)
         ).get()
+
+    def complete_path(self):
+        path = [self.element_name]
+        current = self.parent
+        while current:
+            path.insert(0, current.element_name)
+            current = current.parent
+        return ".".join(path)
 
     def element_based_group(self):
         return self.fetch_group_by_name("element-based")

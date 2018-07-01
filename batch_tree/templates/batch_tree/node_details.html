@@ -1,0 +1,138 @@
+{% extends 'batches.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+    <h3>
+        Node
+        <small class="text-muted">{{ node.complete_path }}</small>
+    </h3>
+    <hr>
+
+    <dl class="row">
+        <dt class="col-sm-3">Node</dt>
+        <dd class="col-sm-9">{{ node.element_name }}</dd>
+
+        <dt class="col-sm-3">Project</dt>
+        <dd class="col-sm-9">
+            {{ node.project.name }}
+        </dd>
+
+        <dt class="col-sm-3">Element-Based</dt>
+        <dd class="col-sm-9">
+            {{ node.element_based_group.count | intcomma }}
+            (<span class="positive">{{ node.element_based_group.positive | intcomma }}</span>
+            <span class="neutral">{{ node.element_based_group.neutral | intcomma }}</span>
+            <span class="negative">{{ node.element_based_group.negative | intcomma }}</span>)
+
+        </dd>
+
+        <dt class="col-sm-3">Scope-Based</dt>
+        <dd class="col-sm-9">
+            {{ node.scope_based_group.count | intcomma }}
+            (<span class="positive">{{ node.scope_based_group.positive | intcomma }}</span>
+            <span class="neutral">{{ node.scope_based_group.neutral | intcomma }}</span>
+            <span class="negative">{{ node.scope_based_group.negative | intcomma }}</span>)
+
+        </dd>
+
+        <dt class="col-sm-3">Version-Based</dt>
+        <dd class="col-sm-9">
+            {{ node.version_based_group.count | intcomma }}
+            (<span class="positive">{{ node.version_based_group.positive | intcomma }}</span>
+            <span class="neutral">{{ node.version_based_group.neutral | intcomma }}</span>
+            <span class="negative">{{ node.version_based_group.negative | intcomma }}</span>)
+
+        </dd>
+    </dl>
+
+    <h3 style="padding-top: 30px;">
+        Batches
+    </h3>
+    <hr>
+
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home"
+               aria-selected="true">Element-Based</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile"
+               aria-selected="false">Scope-Based</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact"
+               aria-selected="false">Version-Based</a>
+        </li>
+    </ul>
+    <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+            {% if node.element_based_group.batches.all %}
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th scope="col">hash_id</th>
+                        <th scope="col">sequence</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for batch in node.element_based_group.batches.all %}
+                        <tr>
+                            <th scope="row">{{ batch.id }}</th>
+                            <td>{{ batch.sequence }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                No Batches!
+            {% endif %}
+
+        </div>
+
+    <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+        {% if node.scope_based_group.batches.all %}
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th scope="col">hash_id</th>
+                    <th scope="col">sequence</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for batch in node.scope_based_group.batches.all %}
+                    <tr>
+                        <th scope="row">{{ batch.id }}</th>
+                        <td>{{ batch.sequence }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            No Batches!
+        {% endif %}
+    </div>
+    <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+        {% if node.version_based_group.batches.all %}
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th scope="col">hash_id</th>
+                    <th scope="col">sequence</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for batch in node.version_based_group.batches.all %}
+                    <tr>
+                        <th scope="row">{{ batch.id }}</th>
+                        <td>{{ batch.sequence }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            No Batches!
+        {% endif %}
+    </div>
+    </div>
+{% endblock %}
